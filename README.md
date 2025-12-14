@@ -1,59 +1,114 @@
-# TaskTracker
+# Task Tracker Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+A modern **Task Tracker** web application built using **Angular 17/18** following best practices such as standalone components, signals, route guards, and unit testing.
 
-## Development server
+This project was developed as part of a technical assignment and covers all the required features mentioned in the task.
 
-To start a local development server, run:
+---
 
+## Features
+
+### Authentication
+- Mocked login (`admin / admin`)
+- Authentication state persisted using `localStorage`
+- Route guards to protect secured pages
+- Logout functionality (clears all stored data)
+
+### Task Management (CRUD)
+- Create, read, update, and delete tasks
+- Tasks stored in `localStorage`
+- Optimistic UI updates
+
+### Filter & Sort
+- Filter tasks by:
+  - Status (TODO / IN_PROGRESS / DONE)
+  - Priority (Low / Medium / High)
+- Sort tasks by:
+  - Status
+  - Priority
+- Supports ascending and descending order
+
+### Pagination
+- Client-side pagination
+- Configurable page size
+- Pagination works with filter & sorting
+
+### Unit Testing
+- Basic unit tests for:
+  - AuthService
+  - TaskStore
+  - LoginComponent
+- Uses Angular 17 default testing setup (Vitest)
+
+### UI / UX
+- Built using Angular Material
+- Responsive layout
+- Empty state message when no tasks exist
+- Success messages on task actions
+
+---
+
+## Tech Stack
+
+- **Angular 17 / 18**
+- Standalone Components
+- Angular Signals
+- Angular Router
+- Reactive Forms
+- Angular Material UI
+- LocalStorage
+- Route Guards
+- Http Interceptor (auth-ready)
+- Unit Testing with Vitest
+
+---
+
+## Project Structure
+
+src/app
+├── core
+│ ├── auth
+│ │ ├── auth.service.ts
+│ │ ├── auth.guard.ts
+│ ├── http
+│ │ ├── auth.interceptor.ts
+├── features
+│ ├── tasks
+│ │ ├── task.model.ts
+│ │ ├── task.store.ts
+│ │ ├── task-list.component.ts
+│ │ ├── task-form.component.ts
+├── pages
+│ ├── login.component.ts
+│ ├── not-found.component.ts
+├── app.routes.ts
+├── app.component.ts
+
+
+---
+
+## Login Credentials
+
+Username: admin
+Password: admin
+
+
+---
+
+## How to Run the Application
+
+### Install dependencies
 ```bash
+npm install
+
+Start development server
+
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Run Unit Tests
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
 ng test
-```
 
-## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
 
-```bash
-ng e2e
-```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

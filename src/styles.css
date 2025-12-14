@@ -1,1 +1,193 @@
-/* You can add global styles to this file, and also import other style files */
+/* ====== GLOBAL STYLES ====== */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: #f5f7fa;
+  color: #333;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+/* Material shadow cards */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Input fields */
+input, select, textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #3f51b5;
+  box-shadow: 0 0 8px rgba(63, 81, 181, 0.2);
+}
+
+/* ====== LOGIN PAGE ====== */
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 40px 30px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  color: #fff;
+  text-align: center;
+}
+
+.login-container h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.login-container input {
+  background: #fff;
+  color: #333;
+  border: none;
+}
+
+.login-container button {
+  background: #ff9800;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  width: 100%;
+}
+
+.login-container button:hover {
+  background: #fb8c00;
+}
+
+/* Error message */
+.error {
+  color: #ff5252;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* ====== TASK LIST PAGE ====== */
+.tasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tasks-header h2 {
+  margin: 0;
+}
+
+.task-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  padding: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.task-card:hover {
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.task-desc {
+  font-size: 14px;
+  color: #666;
+}
+
+.task-actions button {
+  margin-left: 10px;
+}
+
+/* Status Pill */
+.status-pill {
+  padding: 5px 12px;
+  border-radius: 50px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-todo { background: #ff9800; }
+.status-in-progress { background: #3f51b5; }
+.status-done { background: #4caf50; }
+
+/* ====== TASK FORM ====== */
+.task-form {
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.task-form .form-group {
+  margin-bottom: 15px;
+}
+
+.task-form button {
+  background: #3f51b5;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.task-form button:hover {
+  background: #303f9f;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 600px) {
+  .login-container {
+    margin: 50px 10px;
+    padding: 30px 20px;
+  }
+
+  .task-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-actions {
+    margin-top: 10px;
+  }
+}
