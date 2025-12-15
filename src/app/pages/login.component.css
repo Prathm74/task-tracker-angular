@@ -131,6 +131,13 @@ body, html {
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
+.demo-credentials {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #777;
+  text-align: center;
+}
+
 @keyframes buttonSlide {
   to {
     opacity: 1;

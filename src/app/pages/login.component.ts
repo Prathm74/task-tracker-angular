@@ -25,6 +25,9 @@ import { AuthService } from '../core/auth.service';
         </div>
 
         <button mat-raised-button color="primary" type="submit">Login</button>
+         <p class="demo-credentials">
+      Demo credentials: <strong>admin / admin</strong>
+    </p>
       </form>
     </div>
   `,
