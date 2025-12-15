@@ -15,7 +15,6 @@ export class AuthService {
   }
 
   logout(): void {
-    // Clear everything on logout
     localStorage.clear();
   }
 

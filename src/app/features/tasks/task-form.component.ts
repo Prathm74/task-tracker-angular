@@ -71,6 +71,6 @@ export class TaskFormComponent {
   }
 
   onCancel() {
-    this.cancel.emit(); // notify parent to hide form
+    this.cancel.emit(); 
   }
 }
