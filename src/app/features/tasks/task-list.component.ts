@@ -1,120 +1,138 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TaskStore } from './task.store';
 import { TaskFormComponent } from './task-form.component';
 import { Task } from './task.model';
-import { MatCardModule } from '@angular/material/card';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     TaskFormComponent,
-    MatCardModule,
     MatButtonModule,
     MatSelectModule,
-    FormsModule
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   template: `
     <div class="task-container">
       <h2>Task Tracker</h2>
 
-      <div *ngIf="successMessage()" class="success-message">
-        {{ successMessage() }}
-      </div>
+      @if (successMessage()) {
+        <div class="success-message">{{ successMessage() }}</div>
+      }
 
-      <!-- FORM -->
-      <app-task-form
-        *ngIf="showForm"
-        [task]="selectedTask"
-        (save)="onSave($event)"
-        (cancel)="showForm = false">
-      </app-task-form>
+      @if (showForm) {
+        <div class="popup-form">
+        <app-task-form 
+          [task]="selectedTask"
+          (save)="onSave($event)"
+          (cancel)="closeForm()">
+        </app-task-form>
+        </div>
+      }
+<!-- 
+      @if (!showForm) { -->
 
-      <!-- LIST -->
-      <div *ngIf="!showForm">
+        <div class="filters-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Search by title</mat-label>
+            <input
+              matInput
+              [(ngModel)]="searchText"
+              (ngModelChange)="currentPage = 1"
+              placeholder="Type title"
+            />
+          </mat-form-field>
 
-        <!-- FILTER + SORT -->
-        <div class="filters">
-          <mat-select [(ngModel)]="filterStatus" placeholder="Filter by status">
-            <mat-option value="">All</mat-option>
+          <mat-select [(ngModel)]="filterStatus" placeholder="Status">
+            <mat-option value="">All Status</mat-option>
             <mat-option value="TODO">TODO</mat-option>
             <mat-option value="IN_PROGRESS">IN_PROGRESS</mat-option>
             <mat-option value="DONE">DONE</mat-option>
           </mat-select>
 
-          <mat-select [(ngModel)]="filterPriority" placeholder="Filter by priority">
-            <mat-option value="">All</mat-option>
+          <mat-select [(ngModel)]="filterPriority" placeholder="Priority">
+            <mat-option value="">All Priority</mat-option>
             <mat-option value="Low">Low</mat-option>
             <mat-option value="Medium">Medium</mat-option>
             <mat-option value="High">High</mat-option>
           </mat-select>
 
-          <mat-select [(ngModel)]="sortBy" placeholder="Sort by">
-            <mat-option value="">None</mat-option>
-            <mat-option value="priority">Priority</mat-option>
-            <mat-option value="status">Status</mat-option>
-          </mat-select>
-
-          <mat-select [(ngModel)]="sortOrder" placeholder="Order">
-            <mat-option value="asc">Ascending</mat-option>
-            <mat-option value="desc">Descending</mat-option>
-          </mat-select>
-        </div>
-
-        <!-- ADD BUTTON -->
-        <div class="add-task-container">
           <button mat-raised-button color="primary" (click)="openForm(null)">
             Add Task
           </button>
         </div>
 
-        <!-- EMPTY STATE -->
-        <div class="empty-state" *ngIf="paginatedTasks().length === 0">
-          <p>No tasks found.</p>
-          <p class="hint">Click <strong>Add Task</strong> to create your first task.</p>
-        </div>
+        @if (processedTasks().length === 0) {
+          <div class="empty-state">
+            No tasks found. Click <b>Add Task</b> to create one.
+          </div>
+        }
 
-        <!-- TASK CARDS -->
-        <div *ngFor="let task of paginatedTasks()">
-          <mat-card [ngClass]="'task-priority-' + task.priority">
-            <h3>{{ task.title }} ({{ task.priority }})</h3>
-            <p>{{ task.description }}</p>
+        @if (processedTasks().length > 0) {
+          <table mat-table [dataSource]="paginatedTasks()" class="full-width-table">
 
-            <span class="status-pill" [ngClass]="'status-' + task.status">
-              {{ task.status }}
-            </span>
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef>Title</th>
+              <td mat-cell *matCellDef="let task">{{ task.title }}</td>
+            </ng-container>
 
-            <div style="margin-top: 10px;">
-              <button mat-raised-button color="accent" (click)="edit(task)">
-                Edit
-              </button>
-              <button mat-raised-button color="warn"
-                (click)="task.id && delete(task.id)">
-                Delete
-              </button>
-            </div>
-          </mat-card>
-        </div>
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef>Description</th>
+              <td mat-cell *matCellDef="let task">{{ task.description }}</td>
+            </ng-container>
 
-        <!-- PAGINATION -->
-        <div class="pagination" *ngIf="totalPages() > 1">
-          <button mat-button (click)="prevPage()" [disabled]="currentPage === 1">
-            Previous
-          </button>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let task">{{ task.status }}</td>
+            </ng-container>
 
-          <span>Page {{ currentPage }} of {{ totalPages() }}</span>
+            <ng-container matColumnDef="priority">
+              <th mat-header-cell *matHeaderCellDef>Priority</th>
+              <td mat-cell *matCellDef="let task">{{ task.priority }}</td>
+            </ng-container>
 
-          <button mat-button (click)="nextPage()" [disabled]="currentPage === totalPages()">
-            Next
-          </button>
-        </div>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let task">
+                <button mat-button color="primary" (click)="edit(task)">Edit</button>
+                <button mat-button color="warn" (click)="task.id && delete(task.id)">
+                  Delete
+                </button>
+              </td>
+            </ng-container>
 
-      </div>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+
+          <div class="pagination">
+            <button mat-button (click)="prevPage()" [disabled]="currentPage === 1">
+              Prev
+            </button>
+
+            <span>Page {{ currentPage }} of {{ totalPages() }}</span>
+
+            <button
+              mat-button
+              (click)="nextPage()"
+              [disabled]="currentPage === totalPages()">
+              Next
+            </button>
+          </div>
+        }
+      <!-- } -->
     </div>
   `,
   styleUrls: ['./task-list.component.css']
@@ -122,31 +140,35 @@ import { FormsModule } from '@angular/forms';
 export class TaskListComponent {
   private store = inject(TaskStore);
 
+  displayedColumns = ['title', 'description', 'status', 'priority', 'actions'];
+
   selectedTask: Task | null = null;
   showForm = false;
-  successMessage = signal('');
 
   filterStatus = '';
   filterPriority = '';
-  sortBy: 'priority' | 'status' | '' = '';
-  sortOrder: 'asc' | 'desc' = 'asc';
+  searchText = '';
 
-  currentPage = 1;
   pageSize = 5;
+  currentPage = 1;
 
-  onSave(task: Task) {
-    task.id ? this.store.update(task) : this.store.add(task);
-    this.showForm = false;
-    this.selectedTask = null;
-    this.currentPage = 1;
-
-    this.successMessage.set('Task saved successfully!');
-    setTimeout(() => this.successMessage.set(''), 3000);
-  }
+  successMessage = signal('');
 
   openForm(task: Task | null) {
     this.selectedTask = task;
     this.showForm = true;
+  }
+
+  closeForm() {
+    this.selectedTask = null;
+    this.showForm = false;
+  }
+
+  onSave(task: Task) {
+    task.id ? this.store.update(task) : this.store.add(task);
+    this.closeForm();
+    this.successMessage.set('Task saved successfully!');
+    setTimeout(() => this.successMessage.set(''), 3000);
   }
 
   edit(task: Task) {
@@ -160,32 +182,24 @@ export class TaskListComponent {
   processedTasks(): Task[] {
     let tasks = this.store.getAll();
 
+    if (this.searchText) {
+      const search = this.searchText.toLowerCase();
+      tasks = tasks.filter(t =>
+        t.title?.toLowerCase().includes(search)
+      );
+    }
+
     tasks = tasks.filter(t =>
       (!this.filterStatus || t.status === this.filterStatus) &&
       (!this.filterPriority || t.priority === this.filterPriority)
     );
 
-    if (this.sortBy === 'priority') {
-      tasks = [...tasks].sort((a, b) => {
-        const r = a.priority!.localeCompare(b.priority!);
-        return this.sortOrder === 'asc' ? r : -r;
-      });
-    }
-
-    if (this.sortBy === 'status') {
-      tasks = [...tasks].sort((a, b) => {
-        const r = a.status!.localeCompare(b.status!);
-        return this.sortOrder === 'asc' ? r : -r;
-      });
-    }
-
     return tasks;
   }
 
   paginatedTasks(): Task[] {
-    const tasks = this.processedTasks();
     const start = (this.currentPage - 1) * this.pageSize;
-    return tasks.slice(start, start + this.pageSize);
+    return this.processedTasks().slice(start, start + this.pageSize);
   }
 
   totalPages(): number {
@@ -193,14 +207,10 @@ export class TaskListComponent {
   }
 
   nextPage() {
-    if (this.currentPage < this.totalPages()) {
-      this.currentPage++;
-    }
+    if (this.currentPage < this.totalPages()) this.currentPage++;
   }
 
   prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
+    if (this.currentPage > 1) this.currentPage--;
   }
 }
